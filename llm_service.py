@@ -1,8 +1,8 @@
-
 from langchain_openai import ChatOpenAI
 
 from langchain.schema import HumanMessage, AIMessage, SystemMessage
 from langchain.memory import ConversationBufferWindowMemory
+from opik.integrations.langchain import OpikTracer
 from config import Config
 import logging
 
@@ -35,6 +35,36 @@ class DeepSeekService:
             k=10, return_messages=True  # 保留最近10轮对话
         )
 
+        # 初始化Opik跟踪器（如果配置正确）
+        self.opik_tracer = None
+        if Config.OPIK_API_KEY:
+            try:
+                # 设置环境变量供Opik使用
+                import os
+
+                os.environ["OPIK_API_KEY"] = Config.OPIK_API_KEY
+                if Config.OPIK_PROJECT_NAME:
+                    os.environ["OPIK_PROJECT_NAME"] = Config.OPIK_PROJECT_NAME
+                if Config.OPIK_WORKSPACE:
+                    os.environ["OPIK_WORKSPACE"] = Config.OPIK_WORKSPACE
+
+                self.opik_tracer = OpikTracer(
+                    tags=["deepseek", "chat", "flask-app"],
+                    metadata={"service": "DeepSeekService", "model": "deepseek-chat"},
+                )
+                logger.info("Opik跟踪器初始化成功")
+            except Exception as e:
+                logger.warning(f"Opik跟踪器初始化失败: {e}")
+                self.opik_tracer = None
+        else:
+            logger.info("Opik配置不完整，跳过跟踪器初始化")
+            logger.info(
+                f"OPIK_API_KEY: {'已设置' if Config.OPIK_API_KEY else '未设置'}"
+            )
+            logger.info(
+                f"OPIK_WORKSPACE: {'已设置' if Config.OPIK_WORKSPACE else '未设置'}"
+            )
+
     def generate_response(self, user_message, conversation_history=None):
         """
         生成AI回复
@@ -47,6 +77,10 @@ class DeepSeekService:
             str: AI回复内容
         """
         try:
+            logger.info(f"收到用户消息: {user_message}")
+            logger.info(
+                f"对话历史长度: {len(conversation_history) if conversation_history else 0}"
+            )
             # 构建消息列表
             messages = []
 
@@ -66,7 +100,10 @@ class DeepSeekService:
             messages.append(HumanMessage(content=user_message))
 
             # 生成回复
-            response = self.llm(messages)
+            if self.opik_tracer:
+                response = self.llm(messages, callbacks=[self.opik_tracer])
+            else:
+                response = self.llm(messages)
 
             return response.content
 
@@ -98,7 +135,10 @@ class DeepSeekService:
                 HumanMessage(content=title_prompt),
             ]
 
-            response = self.llm(messages)
+            if self.opik_tracer:
+                response = self.llm(messages, callbacks=[self.opik_tracer])
+            else:
+                response = self.llm(messages)
             title = response.content.strip()
 
             # 限制标题长度

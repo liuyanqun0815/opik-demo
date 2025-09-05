@@ -94,6 +94,9 @@ def send_message(conversation_id):
         data = request.get_json()
         user_message = data.get("message", "").strip()
 
+        logger.info(f"API收到用户消息: {user_message}")
+        logger.info(f"请求数据: {data}")
+
         if not user_message:
             return jsonify({"success": False, "message": "消息内容不能为空"}), 400
 

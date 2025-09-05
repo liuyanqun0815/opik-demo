@@ -171,6 +171,9 @@ class ChatApp {
             document.getElementById('send-btn').disabled = true;
             document.querySelector('.char-count').textContent = '0/2000';
 
+            console.log('发送消息:', message);
+            console.log('会话ID:', this.currentConversationId);
+
             const response = await fetch(`/api/conversations/${this.currentConversationId}/messages`, {
                 method: 'POST',
                 headers: {

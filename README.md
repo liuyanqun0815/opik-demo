@@ -18,6 +18,7 @@
 - **前端**: HTML5 + CSS3 + JavaScript
 - **AI模型**: DeepSeek API
 - **样式**: 自定义CSS + Font Awesome图标
+- **监控**: Opik (LLM调用跟踪和监控)
 
 ## 安装和运行
 
@@ -42,7 +43,9 @@ pip install -r requirements.txt
 cp env_example.txt .env
 ```
 
-编辑 `.env` 文件：
+编辑 `.env` 文件，配置数据库连接、DeepSeek API密钥和Opik API密钥：
+
+**获取Opik API密钥**: 访问 https://comet.com/opik/your-workspace-name/get-started
 
 ```env
 # 数据库配置
@@ -55,6 +58,11 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 # Flask配置
 FLASK_ENV=development
 SECRET_KEY=your_secret_key_here
+
+# Opik配置
+OPIK_API_KEY=your_opik_api_key_here
+OPIK_PROJECT_NAME=flask-chat-app
+OPIK_WORKSPACE=your_workspace_name
 ```
 
 ### 4. 创建数据库
