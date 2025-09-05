@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会话记录 - AI聊天助手</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/conversations.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="conversations-container">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-history"></i> 会话记录</h1>
+                <div class="header-actions">
+                    <a href="/" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> 返回聊天
+                    </a>
+                    <button id="refresh-btn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> 刷新
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 搜索和筛选 -->
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="搜索会话标题...">
+                </div>
+                <div class="filter-options">
+                    <select id="sort-select">
+                        <option value="updated_desc">按更新时间排序</option>
+                        <option value="created_desc">按创建时间排序</option>
+                        <option value="title_asc">按标题排序</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 会话列表 -->
+        <main class="conversations-main">
+            <div class="conversations-list" id="conversations-list">
+                <!-- 会话列表将在这里动态加载 -->
+            </div>
+
+            <!-- 空状态 -->
+            <div class="empty-state hidden" id="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h3>暂无会话记录</h3>
+                <p>开始一个新的对话，您的聊天记录将显示在这里</p>
+                <a href="/" class="start-chat-btn">
+                    <i class="fas fa-plus"></i> 开始新对话
+                </a>
+            </div>
+
+            <!-- 加载状态 -->
+            <div class="loading-state hidden" id="loading-state">
+                <div class="loading-spinner"></div>
+                <span>加载中...</span>
+            </div>
+        </main>
+    </div>
+
+    <!-- 删除确认对话框 -->
+    <div class="modal hidden" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>确认删除</h3>
+                <button class="modal-close" id="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>确定要删除这个会话吗？删除后无法恢复。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-delete">取消</button>
+                <button class="btn btn-danger" id="confirm-delete">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/conversations.js') }}"></script>
+</body>
+
+</html>

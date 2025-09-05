@@ -1,0 +1,10 @@
+# 数据库配置
+DATABASE_URL=postgresql://username:password@localhost:5432/chat_db
+
+# DeepSeek API配置
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+
+# Flask配置
+FLASK_ENV=development
+SECRET_KEY=your_secret_key_here
